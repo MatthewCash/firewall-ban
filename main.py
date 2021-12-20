@@ -1,7 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from os import environ
 import json
-from actions import ban_ip, unban_ip
+from actions import ban_ip, unban_ip, is_ip_banned
 
 
 class http_handler(BaseHTTPRequestHandler):
@@ -19,6 +19,19 @@ class http_handler(BaseHTTPRequestHandler):
 
         return True
 
+    def _parse_json(self) -> dict:
+        # Verify Content Type
+        content_type = self.headers.get('content-type')
+
+        if content_type != 'application/json':
+            raise Exception("Expected application/json")
+
+        # Read JSON from request
+        message_len = int(self.headers.get('content-length'))
+        data = json.loads(self.rfile.read(message_len))
+
+        return data
+
     def do_GET(self):
         # Verify Authorization
         if not self._verify_auth():
@@ -31,28 +44,30 @@ class http_handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         # Verify Authorization
-
         if not self._verify_auth():
             self.send_response(401, "Unauthorized")
             self.end_headers()
             return
 
-        # Verify Content Type
-        content_type = self.headers.get('content-type')
-
-        if content_type != 'application/json':
-            self.send_response(400, "Expected application/json")
-            self.end_headers()
-            return
-
-        # Read JSON from request
-        message_len = int(self.headers.get('content-length'))
-
+        # Parse JSON
         try:
-            data = json.loads(self.rfile.read(message_len))
+            data = self._parse_json()
         except:
             self.send_response(400, "Invalid JSON")
             self.end_headers()
+            return
+
+        if 'check' in data:
+            ip_is_banned = is_ip_banned(data['check'])
+
+            res_data = {"isIpBanned": ip_is_banned}
+
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+
+            self.wfile.write(json.dumps(res_data).encode("utf-8"))
+
             return
 
         success = True
@@ -69,7 +84,7 @@ class http_handler(BaseHTTPRequestHandler):
             self.send_response(200, "Request Completed")
         else:
             self.send_response(
-                400, "An error ocurred during execution of 1 or more requests")
+                400, "An error occurred during execution of 1 or more requests")
 
         self.end_headers()
 

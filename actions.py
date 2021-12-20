@@ -28,3 +28,17 @@ def unban_ip(ip: str) -> bool:
         return False
 
     return process.returncode == 0
+
+
+def is_ip_banned(ip: str) -> bool:
+    try:
+        process = subprocess.Popen(
+            ["./scripts/check.sh", ip], shell=True)
+        process.wait()
+    except Exception as error:
+        print("An error ocurred while attempting to check ip!")
+        print(error)
+
+        return False
+    # Check script will return 0 if ip is banned
+    return process.returncode == 0
