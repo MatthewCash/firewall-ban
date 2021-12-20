@@ -8,7 +8,7 @@ def ban_ip(ip: str) -> bool:
             ["./scripts/ban.sh", ip], shell=True)
         process.wait()
     except Exception as error:
-        print("An error ocurred while attempting to call ban script!")
+        print("An error occurred while attempting to call ban script!")
         print(error)
 
         return False
@@ -22,7 +22,7 @@ def unban_ip(ip: str) -> bool:
             ["./scripts/unban.sh", ip], shell=True)
         process.wait()
     except Exception as error:
-        print("An error ocurred while attempting to call ban script!")
+        print("An error occurred while attempting to call ban script!")
         print(error)
 
         return False
