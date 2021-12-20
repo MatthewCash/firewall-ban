@@ -5,7 +5,7 @@ import subprocess
 def ban_ip(ip: str) -> bool:
     try:
         process = subprocess.Popen(
-            ["/usr/bin/sudo /usr/bin/env bash ./scripts/ban.sh", ip], shell=True)
+            f"/usr/bin/sudo -n /usr/bin/env bash ./scripts/ban.sh {ip}", shell=True)
         process.wait()
     except Exception as error:
         print("An error occurred while attempting to call ban script!")
@@ -19,7 +19,7 @@ def ban_ip(ip: str) -> bool:
 def unban_ip(ip: str) -> bool:
     try:
         process = subprocess.Popen(
-            ["/usr/bin/sudo /usr/bin/env bash ./scripts/unban.sh", ip], shell=True)
+            f"/usr/bin/sudo -n /usr/bin/env bash ./scripts/unban.sh {ip}", shell=True)
         process.wait()
     except Exception as error:
         print("An error occurred while attempting to call ban script!")
@@ -33,7 +33,7 @@ def unban_ip(ip: str) -> bool:
 def is_ip_banned(ip: str) -> bool:
     try:
         process = subprocess.Popen(
-            ["/usr/bin/sudo /usr/bin/env bash ./scripts/check.sh", ip], shell=True)
+            f"/usr/bin/sudo -n /usr/bin/env bash ./scripts/check.sh {ip}", shell=True)
         process.wait()
     except Exception as error:
         print("An error ocurred while attempting to check ip!")
