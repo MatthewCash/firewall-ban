@@ -5,7 +5,6 @@ import json
 
 from actions import ban_ip, unban_ip, is_ip_banned
 
-
 class http_handler(BaseHTTPRequestHandler):
     def _verify_auth(self) -> bool:
         auth_token = self.headers.get('Authorization')
@@ -104,11 +103,9 @@ class http_handler(BaseHTTPRequestHandler):
 
         self.end_headers()
 
-
 def validate_ip(ip: str) -> bool:
-    ip_regex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+    ip_regex = "^(([0-9]|[1-9][0-9]|[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
     return bool(match(ip_regex, ip))
-
 
 def main():
     hostname = environ.get('HOST') or '127.0.0.1'
@@ -123,7 +120,6 @@ def main():
     except KeyboardInterrupt:
         print("Server shutting down")
         web_server.socket.close()
-
 
 if __name__ == '__main__':
     main()

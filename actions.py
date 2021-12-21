@@ -1,6 +1,4 @@
-
 import subprocess
-
 
 def ban_ip(ip: str) -> bool:
     try:
@@ -15,7 +13,6 @@ def ban_ip(ip: str) -> bool:
 
     return process.returncode == 0
 
-
 def unban_ip(ip: str) -> bool:
     try:
         process = subprocess.Popen(
@@ -28,7 +25,6 @@ def unban_ip(ip: str) -> bool:
         return False
 
     return process.returncode == 0
-
 
 def is_ip_banned(ip: str) -> bool:
     try:
