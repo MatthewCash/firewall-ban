@@ -1,6 +1,8 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from os import environ
+from re import match
 import json
+
 from actions import ban_ip, unban_ip, is_ip_banned
 
 
@@ -73,11 +75,25 @@ class http_handler(BaseHTTPRequestHandler):
         success = True
 
         if 'ban' in data:
-            if not ban_ip(data['ban']):
+            ip = data['ban']
+
+            if not validate_ip(ip):
+                self.send_response(400, "Invalid IP Address")
+                self.end_headers()
+                return
+
+            if not ban_ip(ip):
                 success = False
 
         if 'unban' in data:
-            if not unban_ip(data['unban']):
+            ip = data['unban']
+
+            if not validate_ip(ip):
+                self.send_response(400, "Invalid IP Address")
+                self.end_headers()
+                return
+
+            if not unban_ip(ip):
                 success = False
 
         if success:
@@ -87,6 +103,11 @@ class http_handler(BaseHTTPRequestHandler):
                 400, "An error occurred during execution of 1 or more requests")
 
         self.end_headers()
+
+
+def validate_ip(ip: str) -> bool:
+    ip_regex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+    return bool(match(ip_regex, ip))
 
 
 def main():
