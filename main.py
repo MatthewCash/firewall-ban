@@ -59,6 +59,11 @@ class http_handler(BaseHTTPRequestHandler):
             return
 
         if 'check' in data:
+            if not validate_ip(ip):
+                self.send_response(400, "Invalid IP Address")
+                self.end_headers()
+                return
+                
             ip_is_banned = is_ip_banned(data['check'])
 
             res_data = {"isIpBanned": ip_is_banned}
