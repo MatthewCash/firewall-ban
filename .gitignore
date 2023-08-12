@@ -1,4 +1,2 @@
-__pycache__/
-
-scripts/*
-!scripts/README.md
+# Compiled Python Bytecode
+**/__pycache__
